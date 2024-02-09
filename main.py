@@ -17,17 +17,20 @@ def temp_rad(temp_out):
 
 
 # 1. i)
-heat_leakage = [(temp_ins - i) * conv_rate for i in corrected]
+heat_leakage = [(temp_ins - i) * conv_rate if (temp_ins - i) >= 0 else 0 for i in corrected]
 for index, value in enumerate(heat_leakage):
     print(f"{int(year[index])}/{int(month[index])}/{int(day[index])}: {value:.1f} kWh/dag")
 
 # 1. ii)
-cop = [1 / (1 - 10/temp_rad(i)) if temp_rad(i) != 0 else 0 for i in corrected]
+cop = [1 / (1 - (10 + 273.3) / (temp_rad(i) + 273.3)) if temp_rad(i) != 0 else 0 for i in corrected]
 for index, value in enumerate(cop):
     print(f"{int(year[index])}/{int(month[index])}/{int(day[index])}: {value:.2f} cop")
 
 # 1 iii)
-wnet = [heat_leakage[i] / cop[i] for i, val in enumerate(corrected)]
+wnet = [heat_leakage[i] / cop[i] if cop[i] != 0 else 0 for i, val in enumerate(corrected)]
 for index, value in enumerate(wnet):
     print(f"{int(year[index])}/{int(month[index])}/{int(day[index])}: {value:.1f} kWh/dag")
-
+    
+# 2
+years = {}
+    
